@@ -1,26 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import PageHero from '../components/PageHero'
+import RevealSection from '../components/Reveal'
+import { sendEnquiry, isEmail } from '../lib/enquiry'
+import { company } from '../data/company'
 import './SafetyReporting.css'
-
-function RevealSection({ children, className = '', delay = 0 }) {
-  const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const observer = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true) }, { threshold: 0.1 })
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [])
-  return (
-    <div ref={ref} className={`reveal ${visible ? 'visible' : ''} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
-      {children}
-    </div>
-  )
-}
 
 const steps = [
   { step: '01', title: 'Gather Information', desc: 'Collect all relevant information about the patient, the product used, the event experienced, and the timeline.' },
   { step: '02', title: 'Complete the Form', desc: 'Fill in all required fields in the adverse event form below. More detail helps our safety team assess the event accurately.' },
-  { step: '03', title: 'Submit Report', desc: 'Submit the completed form. Our pharmacovigilance team will acknowledge receipt within 48 hours.' },
+  { step: '03', title: 'Submit Report', desc: 'Submit the completed form. Our team will review every report it receives.' },
   { step: '04', title: 'Follow-up', desc: 'Our team may contact you for additional information. All communications are kept confidential.' },
 ]
 
@@ -31,7 +19,7 @@ export default function SafetyReporting() {
     reporterEmail: '', reporterPhone: ''
   })
   const [errors, setErrors] = useState({})
-  const [submitted, setSubmitted] = useState(false)
+  const [status, setStatus] = useState('idle') // idle | sending | sent | mailto | failed
 
   const validate = () => {
     const e = {}
@@ -43,15 +31,33 @@ export default function SafetyReporting() {
     if (!form.severity) e.severity = 'Severity required'
     if (!form.reporterName.trim()) e.reporterName = 'Reporter name required'
     if (!form.reporterEmail.trim()) e.reporterEmail = 'Reporter email required'
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.reporterEmail)) e.reporterEmail = 'Invalid email'
+    else if (!isEmail(form.reporterEmail)) e.reporterEmail = 'Invalid email'
     return e
   }
 
-  const handleSubmit = (ev) => {
+  const handleSubmit = async (ev) => {
     ev.preventDefault()
     const e = validate()
-    if (Object.keys(e).length) { setErrors(e); return }
-    setSubmitted(true)
+    setErrors(e)
+    if (Object.keys(e).length) return
+    setStatus('sending')
+    try {
+      setStatus(await sendEnquiry(`Adverse event report: ${form.productName}`, {
+        'Patient name': form.patientName,
+        'Patient age': form.age,
+        'Patient gender': form.gender,
+        'Product name': form.productName,
+        'Batch number': form.batchNumber,
+        'Event description': form.eventDescription,
+        'Date of event': form.eventDate,
+        'Severity': form.severity,
+        'Reporter name': form.reporterName,
+        'Reporter email': form.reporterEmail,
+        'Reporter phone': form.reporterPhone,
+      }))
+    } catch {
+      setStatus('failed')
+    }
   }
 
   const f = (key) => form[key]
@@ -62,6 +68,7 @@ export default function SafetyReporting() {
       <PageHero
         title="Safety Reporting"
         subtitle="Your safety reports help us maintain the highest standards of pharmacovigilance and protect patient welfare worldwide."
+        image="https://images.unsplash.com/photo-1579154204601-01588f351e67?w=1920&h=700&fit=crop&q=75"
         breadcrumbs={[{ label: 'Safety Reporting' }]}
       />
 
@@ -86,12 +93,12 @@ export default function SafetyReporting() {
                 <h2 className="section-title">Why Report Adverse Events?</h2>
                 <p>
                   Pharmacovigilance — the science of detecting, assessing, and preventing adverse effects of medicines —
-                  is central to ensuring the safety of pharmaceutical products throughout their lifecycle. Auxillion Lifecare
-                  maintains a robust pharmacovigilance system in compliance with CDSCO, WHO, and international guidelines.
+                  is central to ensuring the safety of pharmaceutical products throughout their lifecycle. Galexis Pharmaceuticals
+                  takes every report seriously and reviews it as part of our commitment to patient safety.
                 </p>
                 <p style={{ marginTop: '12px' }}>
                   If you or a patient experiences any unexpected, undesirable, or harmful event potentially related to
-                  an Auxillion Lifecare product, we encourage you to report it using the form below. Every report, however
+                  a Galexis Pharmaceuticals product, we encourage you to report it using the form below. Every report, however
                   minor, contributes to our collective understanding of medicine safety and ultimately protects patients.
                 </p>
               </div>
@@ -135,12 +142,18 @@ export default function SafetyReporting() {
                   ⚠️ For medical emergencies, contact emergency services immediately. This form is for non-emergency adverse event reporting only.
                 </p>
               </div>
-              {submitted ? (
-                <div className="safety-success">
-                  <div style={{ fontSize: '3rem', marginBottom: '16px' }}>✅</div>
-                  <h3>Report Submitted Successfully</h3>
-                  <p>Thank you for your report. Our pharmacovigilance team will review it within 48 hours and may contact you for additional information if needed.</p>
-                  <p style={{ marginTop: '10px', fontWeight: '600', color: 'var(--color-accent)' }}>Reference: ADE-{Date.now().toString().slice(-6)}</p>
+              {status === 'sent' ? (
+                <div className="safety-success" role="status">
+                  <h3>Report Submitted</h3>
+                  <p>Thank you for your report. Our team will review it and may contact you for additional information.</p>
+                </div>
+              ) : status === 'mailto' ? (
+                <div className="safety-success" role="status">
+                  <h3>Please press Send in your email app</h3>
+                  <p>
+                    Your report has been prepared in your email app, addressed to <a href={`mailto:${company.email}`}>{company.email}</a>.
+                    If nothing opened, please email the details to us or call {company.phones[0].display}.
+                  </p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate>
@@ -172,7 +185,7 @@ export default function SafetyReporting() {
                   <div className="grid-2">
                     <div className="form-group">
                       <label>Product Name *</label>
-                      <input type="text" value={f('productName')} onChange={e => s('productName', e.target.value)} className={errors.productName ? 'error' : ''} placeholder="Name of the Auxillion product" />
+                      <input type="text" value={f('productName')} onChange={e => s('productName', e.target.value)} className={errors.productName ? 'error' : ''} placeholder="Name of the Galexis product" />
                       {errors.productName && <span className="form-error">{errors.productName}</span>}
                     </div>
                     <div className="form-group">
@@ -225,7 +238,14 @@ export default function SafetyReporting() {
                     </div>
                   </div>
 
-                  <button type="submit" className="btn-primary" style={{ marginTop: '8px' }}>Submit Adverse Event Report</button>
+                  <button type="submit" className="btn-primary" style={{ marginTop: '8px' }} disabled={status === 'sending'}>
+                    {status === 'sending' ? 'Submitting…' : 'Submit Adverse Event Report'}
+                  </button>
+                  {status === 'failed' && (
+                    <p className="gx-form-error" role="alert">
+                      The report could not be sent. Please email <a href={`mailto:${company.email}`}>{company.email}</a> or call {company.phones[0].display}.
+                    </p>
+                  )}
                 </form>
               )}
             </div>
@@ -245,9 +265,9 @@ export default function SafetyReporting() {
           </RevealSection>
           <div className="grid-3">
             {[
+              { name: 'PvPI', full: 'Pharmacovigilance Programme of India', url: 'https://www.ipc.gov.in', desc: "India's national programme for reporting adverse drug reactions, run by the Indian Pharmacopoeia Commission." },
               { name: 'CDSCO', full: 'Central Drugs Standard Control Organisation', url: 'https://cdsco.gov.in', desc: 'National regulatory body for pharmaceuticals and medical devices in India.' },
-              { name: 'WHO', full: 'World Health Organization', url: 'https://www.who.int', desc: 'Global pharmacovigilance programme and VigiBase adverse event database.' },
-              { name: 'EMA', full: 'European Medicines Agency', url: 'https://www.ema.europa.eu', desc: 'EU regulatory authority for human and veterinary medicines safety.' },
+              { name: 'WHO', full: 'World Health Organization', url: 'https://www.who.int', desc: 'Global medicines safety and pharmacovigilance information.' },
             ].map((reg, i) => (
               <RevealSection key={i} delay={i * 80}>
                 <div className="safety-reg-card">

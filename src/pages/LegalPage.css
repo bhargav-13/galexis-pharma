@@ -9,7 +9,7 @@
 }
 
 .legal-content h2 {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-heading);
   font-size: 1.5rem;
   color: var(--color-primary);
   margin: 2.5rem 0 1rem;

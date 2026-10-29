@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import GalexisLogo from './GalexisLogo'
 import './Loader.css'
 
 export default function Loader({ onDone }) {
@@ -15,15 +16,7 @@ export default function Loader({ onDone }) {
       onTransitionEnd={() => leaving && onDone?.()}
     >
       <div className="loader__logo">
-        {'Logo'.split('').map((char, i) => (
-          <span
-            key={i}
-            className="loader__char"
-            style={{ animationDelay: `${0.1 + i * 0.12}s` }}
-          >
-            {char}
-          </span>
-        ))}
+        <GalexisLogo size="xl" />
       </div>
       <div className="loader__bar">
         <div className="loader__bar-fill" />
