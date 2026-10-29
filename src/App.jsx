@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import Loader from './components/Loader'
 import ScrollToTopBtn from './components/ScrollToTopBtn'
 import FloatingContact from './components/FloatingContact'
+import Seo from './components/Seo'
 import Home from './pages/Home'
 import About from './pages/About'
 import Products from './pages/Products'
@@ -48,6 +49,7 @@ function AppLayout({ isLoaded }) {
     <>
       <a href="#main-content" className="skip-link">Skip to main content</a>
       <ScrollToTop />
+      <Seo />
       <Navbar isLoaded={isLoaded} />
       <main id="main-content">
         <Routes>

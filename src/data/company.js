@@ -6,6 +6,7 @@ export const company = {
   intro: 'Manufacturing & Marketing of Quality Medicines',
   email: 'info@galexispharmaceuticals.com',
   website: 'www.galexispharmaceuticals.com',
+  siteUrl: 'https://www.galexispharmaceuticals.com',
   phones: [
     { display: '+91 83474 38145', tel: '+918347438145' },
     { display: '+91 63512 67086', tel: '+916351267086' },

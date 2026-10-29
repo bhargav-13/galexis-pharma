@@ -336,3 +336,12 @@ input, textarea, select {
   transition: top 0.2s;
 }
 .skip-link:focus { top: 16px; }
+
+/* Static page text written at build time (scripts/prerender.mjs); React replaces it on load */
+.prerender-fallback { max-width: 1240px; margin: 0 auto; padding: 32px 28px 64px; }
+.prerender-fallback header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 96px; }
+.prerender-fallback nav ul { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.prerender-fallback nav a { font-family: var(--font-heading); font-size: 0.92rem; color: var(--color-text-primary); }
+.prerender-fallback h1 { margin-bottom: 16px; max-width: 800px; }
+.prerender-fallback main p { max-width: 680px; margin-bottom: 12px; }
+.prerender-fallback footer { margin-top: 64px; font-size: 0.95rem; color: var(--color-text-muted); }
