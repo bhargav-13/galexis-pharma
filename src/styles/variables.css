@@ -1,29 +1,51 @@
 :root {
-  --color-primary: #0D2B4E;
-  --color-accent: #0A8B6E;
-  --color-accent-light: #00C4A7;
-  --color-accent-hover: #078A6B;
+  /* ── Typography ── */
+  --font-heading: 'Lexend', system-ui, sans-serif;
+  --font-body: 'Source Sans 3', system-ui, sans-serif;
+
+  /* ── Brand (from the Galexis logo) ── */
+  --color-primary: #14347A;        /* Galexis navy */
+  --color-primary-deep: #0B1D47;   /* footer, dark bands */
+  --color-primary-soft: #E8EEF9;
+  --color-accent: #2E9B4A;         /* Galexis green */
+  --color-accent-hover: #23803B;
+  --color-accent-light: #7CC242;
+  --color-accent-soft: #E9F6EC;
+  --gradient-brand: linear-gradient(120deg, #14347A 0%, #1B5FA8 55%, #2E9B4A 100%);
+
+  /* ── Surfaces ── */
   --color-bg-main: #FFFFFF;
-  --color-bg-warm: #F8FAFB;
-  --color-bg-soft: #EFF3F6;
+  --color-bg-warm: #F7F9FC;
+  --color-bg-soft: #F3F6FB;
   --color-bg-card: #FFFFFF;
-  --color-text-primary: #0D2B4E;
-  --color-text-body: #3D5A73;
-  --color-text-muted: #6B8399;
-  --color-text-light: #9AB0C2;
-  --color-border: #D8E4ED;
-  --color-border-light: #EEF3F7;
+
+  /* ── Text (all ≥ 4.5:1 on white) ── */
+  --color-text-primary: #0B1D47;
+  --color-text-body: #334155;
+  --color-text-muted: #55657D;
+  --color-text-light: #8A9AB0;     /* decorative only, never body copy */
+
+  /* ── Lines & states ── */
+  --color-border: #D9E1EC;
+  --color-border-light: #E8EDF4;
   --color-success: #16A34A;
   --color-warning: #D97706;
   --color-error: #DC2626;
   --color-info: #2563EB;
-  --shadow-sm: 0 1px 3px rgba(13,43,78,0.08);
-  --shadow-md: 0 4px 16px rgba(13,43,78,0.10);
-  --shadow-lg: 0 8px 32px rgba(13,43,78,0.12);
-  --shadow-card: 0 2px 12px rgba(13,43,78,0.08);
+
+  /* ── Elevation ── */
+  --shadow-sm: 0 1px 2px rgba(11, 29, 71, 0.06);
+  --shadow-md: 0 6px 18px rgba(11, 29, 71, 0.08);
+  --shadow-lg: 0 18px 44px rgba(11, 29, 71, 0.12);
+  --shadow-card: 0 1px 3px rgba(11, 29, 71, 0.05), 0 8px 24px rgba(11, 29, 71, 0.05);
+
+  /* ── Shape ── */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-full: 9999px;
+
+  /* ── Motion ── */
+  --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
 }

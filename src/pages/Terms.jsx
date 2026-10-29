@@ -6,16 +6,16 @@ export default function Terms() {
     <div className="legal-page">
       <PageHero
         title="Terms & Conditions"
-        subtitle="The terms governing your use of Auxillion Lifecare's website and services."
+        subtitle="The terms governing your use of Galexis Pharmaceuticals's website and services."
         breadcrumbs={[{ label: 'Terms & Conditions' }]}
       />
       <section className="section">
         <div className="container">
           <div className="legal-content">
-            <p className="legal-updated">Last updated: January 2025</p>
+            <p className="legal-updated">Last updated: October 2026</p>
 
             <h2>1. Acceptance of Terms</h2>
-            <p>By accessing and using the Auxillion Lifecare website (auxillionlifecare.com) and its associated services, you accept and agree to be bound by these Terms and Conditions and our Privacy Policy. If you do not agree to these terms, please do not use our website.</p>
+            <p>By accessing and using the Galexis Pharmaceuticals website (galexispharmaceuticals.com) and its associated services, you accept and agree to be bound by these Terms and Conditions and our Privacy Policy. If you do not agree to these terms, please do not use our website.</p>
 
             <h2>2. Use of Website</h2>
             <p>You agree to use this website only for lawful purposes and in a manner that does not infringe the rights of others or restrict their use of the site. You must not:</p>
@@ -28,7 +28,7 @@ export default function Terms() {
             </ul>
 
             <h2>3. Intellectual Property</h2>
-            <p>The website and its original content, features, and functionality are owned by Auxillion Lifecare and are protected by applicable intellectual property laws. Our trademarks and trade dress may not be used without prior written consent.</p>
+            <p>The website and its original content, features, and functionality are owned by Galexis Pharmaceuticals and are protected by applicable intellectual property laws. Our trademarks and trade dress may not be used without prior written consent.</p>
             <p>You may print or download extracts from our website for personal reference, but you may not modify the paper or digital copies of any materials, and you must acknowledge the source.</p>
 
             <h2>4. Medical and Product Information</h2>
@@ -39,16 +39,16 @@ export default function Terms() {
             <p>Products described on this website may not be available in all markets or countries. Pharmaceutical product availability is subject to regulatory approval in each jurisdiction. Information about products on this website does not constitute an offer to sell or supply those products in any jurisdiction where they are not approved.</p>
 
             <h2>6. Links to Third-Party Websites</h2>
-            <p>Our website may contain links to third-party websites. These links are provided for your convenience only. Auxillion Lifecare has no control over the content of those sites and accepts no responsibility for them or for any loss or damage that may arise from your use of them.</p>
+            <p>Our website may contain links to third-party websites. These links are provided for your convenience only. Galexis Pharmaceuticals has no control over the content of those sites and accepts no responsibility for them or for any loss or damage that may arise from your use of them.</p>
 
             <h2>7. Disclaimers</h2>
             <p>The website is provided on an "as is" and "as available" basis without any warranties, express or implied. We do not warrant that the website will be uninterrupted, error-free, or free of viruses or other harmful components.</p>
 
             <h2>8. Limitation of Liability</h2>
-            <p>To the fullest extent permitted by applicable law, Auxillion Lifecare shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the website or reliance on information provided herein.</p>
+            <p>To the fullest extent permitted by applicable law, Galexis Pharmaceuticals shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the website or reliance on information provided herein.</p>
 
             <h2>9. Governing Law</h2>
-            <p>These Terms and Conditions are governed by and construed in accordance with the laws of India. Any disputes arising in connection with these terms shall be subject to the exclusive jurisdiction of the courts in Ahmedabad, Gujarat.</p>
+            <p>These Terms and Conditions are governed by and construed in accordance with the laws of India. Any disputes arising in connection with these terms shall be subject to the exclusive jurisdiction of the courts in Junagadh, Gujarat.</p>
 
             <h2>10. Changes to Terms</h2>
             <p>We reserve the right to modify these terms at any time. Changes become effective upon posting to the website. Your continued use of the website following any changes constitutes your acceptance of the new terms.</p>
@@ -56,9 +56,9 @@ export default function Terms() {
             <h2>11. Contact</h2>
             <p>Questions about these Terms and Conditions should be directed to:</p>
             <div className="legal-contact">
-              <p><strong>Auxillion Lifecare</strong></p>
-              <p>Email: <a href="mailto:info@auxillionlifecare.com">info@auxillionlifecare.com</a></p>
-              <p>Phone: <a href="tel:+919409502669">+91 94095 02669</a></p>
+              <p><strong>Galexis Pharmaceuticals</strong></p>
+              <p>Email: <a href="mailto:info@galexispharmaceuticals.com">info@galexispharmaceuticals.com</a></p>
+              <p>Phone: <a href="tel:+918347438145">+91 83474 38145</a></p>
             </div>
           </div>
         </div>

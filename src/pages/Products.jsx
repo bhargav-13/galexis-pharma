@@ -1,201 +1,167 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import PageHero from '../components/PageHero'
+import Reveal from '../components/Reveal'
+import Icon from '../components/Icon'
+import EnquiryForm from '../components/EnquiryForm'
+import { dosageForms, segments, range } from '../data/products'
 import './Products.css'
 
-const humanProducts = [
-  { id: 1, name: 'Omeprazole 20mg', category: 'Gastroenterology', form: 'Capsule', desc: 'Proton pump inhibitor for acid reflux, gastric ulcers and GERD. Provides sustained acid suppression for up to 24 hours.' },
-  { id: 2, name: 'Pantoprazole 40mg', category: 'Gastroenterology', form: 'Tablet', desc: 'Enteric-coated proton pump inhibitor for erosive esophagitis and maintenance of healed esophagitis.' },
-  { id: 3, name: 'Ondansetron 4mg ODT', category: 'Gastroenterology', form: 'ODT', desc: 'Orally disintegrating tablet for prevention and treatment of nausea and vomiting.' },
-  { id: 4, name: 'Amlodipine 5mg', category: 'Cardiology', form: 'Tablet', desc: 'Calcium channel blocker for hypertension and stable angina with long duration of action.' },
-  { id: 5, name: 'Atorvastatin 10mg', category: 'Cardiology', form: 'Tablet', desc: 'HMG-CoA reductase inhibitor for reduction of LDL cholesterol and prevention of cardiovascular events.' },
-  { id: 6, name: 'Metformin 500mg', category: 'Cardiology', form: 'Tablet', desc: 'Biguanide antidiabetic agent for type 2 diabetes management, also cardioprotective.' },
-  { id: 7, name: 'Ibuprofen 400mg', category: 'Pain & Inflammation', form: 'Tablet', desc: 'NSAID providing effective relief from mild to moderate pain, fever, and inflammatory conditions.' },
-  { id: 8, name: 'Diclofenac 50mg', category: 'Pain & Inflammation', form: 'Tablet', desc: 'Phenylacetic acid NSAID for rheumatoid arthritis, osteoarthritis, and acute musculoskeletal pain.' },
-  { id: 9, name: 'Amoxicillin 500mg', category: 'Anti-Infective', form: 'Capsule', desc: 'Broad-spectrum aminopenicillin antibiotic effective against a wide range of bacterial infections.' },
-  { id: 10, name: 'Azithromycin 250mg', category: 'Anti-Infective', form: 'Tablet', desc: 'Macrolide antibiotic for respiratory tract infections, skin infections, and sexually transmitted diseases.' },
-  { id: 11, name: 'Ciprofloxacin Eye Drops', category: 'Ophthalmic', form: 'Eye Drops', desc: 'Fluoroquinolone antibiotic ophthalmic solution for bacterial conjunctivitis and corneal ulcers.' },
-  { id: 12, name: 'Sertraline 50mg', category: 'CNS', form: 'Tablet', desc: 'SSRI antidepressant for major depressive disorder, OCD, panic disorder, and social anxiety.' },
+const enquiryFields = [
+  { name: 'name', label: 'Name', required: true, placeholder: 'Your name' },
+  { name: 'company', label: 'Company / Firm', placeholder: 'Optional' },
+  { name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'you@example.com' },
+  { name: 'phone', label: 'Phone', type: 'tel', required: true, placeholder: '+91 98765 43210' },
+  { name: 'message', label: 'Requirement', type: 'textarea', rows: 3, placeholder: 'Quantity, packing, destination market…' },
 ]
 
-const vetProducts = [
-  { id: 13, name: 'Oxytetracycline Injectable', category: 'Antibiotics', form: 'Injectable', desc: 'Broad-spectrum tetracycline antibiotic for respiratory, enteric, and systemic bacterial infections in livestock.' },
-  { id: 14, name: 'Ivermectin 1%', category: 'Antiparasitics', form: 'Injectable', desc: 'Macrocyclic lactone antiparasitic effective against gastrointestinal roundworms, lungworms, and external parasites.' },
-  { id: 15, name: 'Albendazole Suspension', category: 'Antiparasitics', form: 'Suspension', desc: 'Benzimidazole anthelmintic for treatment of gastrointestinal nematodes, tapeworms, and flukes.' },
-  { id: 16, name: 'Amoxicillin Vet 500mg', category: 'Antibiotics', form: 'Tablet', desc: 'Veterinary amoxicillin for urinary tract infections, skin infections, and dental infections in pets.' },
-  { id: 17, name: 'Vitamin B Complex Vet', category: 'Nutritional Supplements', form: 'Injectable', desc: 'Essential B-vitamin complex supporting energy metabolism and nervous system health in all species.' },
-  { id: 18, name: 'Meloxicam Vet', category: 'Pain Management', form: 'Oral Liquid', desc: 'COX-2 selective NSAID for pain and inflammation management in dogs, cats, and cattle.' },
-  { id: 19, name: 'Enrofloxacin 10%', category: 'Antibiotics', form: 'Oral Solution', desc: 'Fluoroquinolone antibiotic for respiratory, urinary, and systemic bacterial infections in poultry and livestock.' },
-  { id: 20, name: 'Calcium Borogluconate', category: 'Nutritional Supplements', form: 'Injectable', desc: 'Calcium supplement for treatment of hypocalcaemia (milk fever) in dairy cattle.' },
+const requestFields = [
+  { name: 'name', label: 'Name', required: true },
+  { name: 'phone', label: 'Phone', type: 'tel', required: true },
+  { name: 'email', label: 'Email', type: 'email' },
+  { name: 'product', label: 'Product / composition you need', required: true, full: true },
 ]
-
-function RevealSection({ children, className = '', delay = 0 }) {
-  const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const observer = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true) }, { threshold: 0.1 })
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [])
-  return (
-    <div ref={ref} className={`reveal ${visible ? 'visible' : ''} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
-      {children}
-    </div>
-  )
-}
 
 export default function Products() {
-  const [division, setDivision] = useState('human')
-  const [category, setCategory] = useState('All')
-  const [selectedProduct, setSelectedProduct] = useState(null)
-  const [enquireForm, setEnquireForm] = useState({ name: '', email: '', message: '' })
-  const [enquireErrors, setEnquireErrors] = useState({})
-  const [enquireSubmitted, setEnquireSubmitted] = useState(false)
-  const [requestForm, setRequestForm] = useState({ name: '', email: '', product: '' })
-  const [requestSubmitted, setRequestSubmitted] = useState(false)
+  const [form, setForm] = useState('All')
+  const [query, setQuery] = useState('')
+  const [selected, setSelected] = useState(null)
 
-  const products = division === 'human' ? humanProducts : vetProducts
-  const categories = ['All', ...new Set(products.map(p => p.category))]
-  const filtered = category === 'All' ? products : products.filter(p => p.category === category)
+  const forms = ['All', ...dosageForms.map(d => d.key)]
+  const formTitle = (key) => dosageForms.find(d => d.key === key)?.title || key
 
-  const validateEnquire = () => {
-    const e = {}
-    if (!enquireForm.name.trim()) e.name = 'Name required'
-    if (!enquireForm.email.trim()) e.email = 'Email required'
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(enquireForm.email)) e.email = 'Invalid email'
-    if (!enquireForm.message.trim()) e.message = 'Message required'
-    return e
-  }
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return range.filter(p =>
+      (form === 'All' || p.form === form) &&
+      (!q || `${p.name} ${p.segment}`.toLowerCase().includes(q))
+    )
+  }, [form, query])
 
-  const handleEnquireSubmit = (ev) => {
-    ev.preventDefault()
-    const e = validateEnquire()
-    if (Object.keys(e).length) { setEnquireErrors(e); return }
-    setEnquireSubmitted(true)
-  }
-
-  const openModal = (p) => {
-    setSelectedProduct(p)
-    setEnquireForm({ name: '', email: '', message: '' })
-    setEnquireErrors({})
-    setEnquireSubmitted(false)
-  }
+  useEffect(() => {
+    if (!selected) return
+    const onKey = (e) => e.key === 'Escape' && setSelected(null)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [selected])
 
   return (
     <div className="products-page">
       <PageHero
         title="Our Products"
-        subtitle="Explore our comprehensive portfolio of human and veterinary pharmaceutical products, manufactured to international quality standards."
+        subtitle="Quality medicines across key dosage forms and therapy segments — available under the Galexis brand and for third-party / private label supply."
+        image="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=1920&h=700&fit=crop&q=75"
         breadcrumbs={[{ label: 'Products' }]}
       />
 
+      {/* Dosage forms */}
       <section className="section">
         <div className="container">
-          {/* Division Tabs */}
-          <RevealSection>
-            <div className="products-division-tabs">
-              <button className={`products-div-tab ${division === 'human' ? 'products-div-tab--active' : ''}`} onClick={() => { setDivision('human'); setCategory('All') }}>
-                💊 Human Medicines
-              </button>
-              <button className={`products-div-tab ${division === 'vet' ? 'products-div-tab--active' : ''}`} onClick={() => { setDivision('vet'); setCategory('All') }}>
-                🐄 Veterinary Medicines
-              </button>
-            </div>
-          </RevealSection>
-
-          {/* Category Filter */}
-          <RevealSection delay={80}>
-            <div className="products-filter">
-              <span className="products-filter__label">Filter by:</span>
-              <div className="products-filter__options">
-                {categories.map(cat => (
-                  <button key={cat} className={`products-filter__btn ${category === cat ? 'products-filter__btn--active' : ''}`} onClick={() => setCategory(cat)}>
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </RevealSection>
-
-          {/* Products Grid */}
-          <div className="products-grid">
-            {filtered.map((product, i) => (
-              <RevealSection key={product.id} delay={i * 50}>
-                <div className="product-card">
-                  <div className="product-card__top">
-                    <span className="product-card__category">{product.category}</span>
-                    <span className="product-card__form">{product.form}</span>
-                  </div>
-                  <h3 className="product-card__name">{product.name}</h3>
-                  <p className="product-card__desc">{product.desc}</p>
-                  <button className="product-card__enquire" onClick={() => openModal(product)}>
-                    Enquire Now →
-                  </button>
-                </div>
-              </RevealSection>
+          <Reveal className="gx-head">
+            <span className="section-tag">Dosage Forms</span>
+            <h2 className="section-title">What We Offer</h2>
+            <p className="section-subtitle">A focused range of oral and topical formulations for domestic and export markets.</p>
+          </Reveal>
+          <div className="gx-cards">
+            {dosageForms.map((d, i) => (
+              <Reveal key={d.key} delay={i * 60}>
+                <button type="button" className="gx-card products-form-card" onClick={() => { setForm(d.key); document.getElementById('range')?.scrollIntoView({ behavior: 'smooth' }) }}>
+                  <div className="gx-card__icon"><Icon name={d.icon} /></div>
+                  <h3>{d.title}</h3>
+                  <p>{d.desc}</p>
+                </button>
+              </Reveal>
             ))}
           </div>
-
-          {filtered.length === 0 && (
-            <div className="products-empty">No products found in this category.</div>
-          )}
-
-          {/* Request Form */}
-          <RevealSection>
-            <div className="products-request-form">
-              <h3>Can't find your product?</h3>
-              <p>Tell us what you're looking for and our team will check availability.</p>
-              {requestSubmitted ? (
-                <p className="products-request-success">✅ Thank you! We'll get back to you shortly.</p>
-              ) : (
-                <form className="products-request-inline" onSubmit={(e) => { e.preventDefault(); setRequestSubmitted(true) }}>
-                  <input type="text" placeholder="Your name" value={requestForm.name} onChange={e => setRequestForm({...requestForm, name: e.target.value})} required />
-                  <input type="email" placeholder="Your email" value={requestForm.email} onChange={e => setRequestForm({...requestForm, email: e.target.value})} required />
-                  <input type="text" placeholder="Product you're looking for" value={requestForm.product} onChange={e => setRequestForm({...requestForm, product: e.target.value})} required />
-                  <button type="submit" className="btn-primary">Submit Request</button>
-                </form>
-              )}
-            </div>
-          </RevealSection>
         </div>
       </section>
 
-      {/* Product Modal */}
-      {selectedProduct && (
-        <div className="product-modal-overlay" onClick={() => setSelectedProduct(null)}>
-          <div className="product-modal" onClick={e => e.stopPropagation()}>
-            <button className="product-modal__close" onClick={() => setSelectedProduct(null)}>✕</button>
-            <div className="product-modal__header">
-              <span className="product-card__category">{selectedProduct.category}</span>
-              <h2 className="product-modal__name">{selectedProduct.name}</h2>
-              <span className="product-card__form">{selectedProduct.form}</span>
+      {/* Therapy segments */}
+      <section className="section section-bg-soft">
+        <div className="container">
+          <Reveal className="gx-head">
+            <span className="section-tag">Therapy Segments</span>
+            <h2 className="section-title">Therapeutic Coverage</h2>
+          </Reveal>
+          <Reveal className="gx-chips">
+            {segments.map(s => <span key={s} className="gx-chip">{s}</span>)}
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Range */}
+      <section className="section" id="range">
+        <div className="container">
+          <Reveal className="gx-head">
+            <span className="section-tag">Product Range</span>
+            <h2 className="section-title">Indicative Product List</h2>
+            <p className="section-subtitle">
+              A selection from our range. For the complete, current product list with compositions and pack sizes, please contact us.
+            </p>
+          </Reveal>
+
+          <div className="products-filter">
+            <div className="products-filter__options" role="group" aria-label="Filter by dosage form">
+              {forms.map(f => (
+                <button key={f} type="button" aria-pressed={form === f} className={`products-filter__btn ${form === f ? 'products-filter__btn--active' : ''}`} onClick={() => setForm(f)}>
+                  {f === 'All' ? 'All' : formTitle(f)}
+                </button>
+              ))}
             </div>
-            <p className="product-modal__desc">{selectedProduct.desc}</p>
+            <input
+              type="search"
+              className="products-search"
+              placeholder="Search by name or segment…"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              aria-label="Search products"
+            />
+          </div>
+
+          <div className="products-grid">
+            {filtered.map(p => (
+              <div key={p.name} className="product-card">
+                <div className="product-card__top">
+                  <span className="product-card__category">{p.segment}</span>
+                  <span className="product-card__form">{formTitle(p.form)}</span>
+                </div>
+                <h3 className="product-card__name">{p.name}</h3>
+                <p className="product-card__desc">{p.desc}</p>
+                <button type="button" className="product-card__enquire" onClick={() => setSelected(p)}>
+                  Enquire Now →
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {filtered.length === 0 && <div className="products-empty">No products match your search.</div>}
+
+          <Reveal>
+            <div className="products-request-form">
+              <h3>Can't find your product?</h3>
+              <p>Tell us the composition you need — we'll check availability or manufacture it for you.</p>
+              <EnquiryForm subject="Product request" fields={requestFields} submitLabel="Submit Request" />
+            </div>
+          </Reveal>
+
+          <p className="products-disclaimer">
+            Product information is intended for healthcare professionals and trade partners. Medicines should be used only as prescribed by a registered medical practitioner.
+          </p>
+        </div>
+      </section>
+
+      {selected && (
+        <div className="product-modal-overlay" onClick={() => setSelected(null)}>
+          <div className="product-modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title" onClick={e => e.stopPropagation()}>
+            <button type="button" className="product-modal__close" onClick={() => setSelected(null)} aria-label="Close">✕</button>
+            <div className="product-modal__header">
+              <span className="product-card__category">{selected.segment}</span>
+              <h2 id="product-modal-title" className="product-modal__name">{selected.name}</h2>
+              <span className="product-card__form">{formTitle(selected.form)}</span>
+            </div>
+            <p className="product-modal__desc">{selected.desc}</p>
             <div className="product-modal__divider" />
             <h4 className="product-modal__enquire-title">Send an Enquiry</h4>
-            {enquireSubmitted ? (
-              <div className="product-modal__success">
-                ✅ Thank you! Our team will contact you about <strong>{selectedProduct.name}</strong>.
-              </div>
-            ) : (
-              <form onSubmit={handleEnquireSubmit} noValidate>
-                <div className="form-group">
-                  <label>Name *</label>
-                  <input type="text" value={enquireForm.name} onChange={e => setEnquireForm({...enquireForm, name: e.target.value})} className={enquireErrors.name ? 'error' : ''} placeholder="Your name" />
-                  {enquireErrors.name && <span className="form-error">{enquireErrors.name}</span>}
-                </div>
-                <div className="form-group">
-                  <label>Email *</label>
-                  <input type="email" value={enquireForm.email} onChange={e => setEnquireForm({...enquireForm, email: e.target.value})} className={enquireErrors.email ? 'error' : ''} placeholder="you@example.com" />
-                  {enquireErrors.email && <span className="form-error">{enquireErrors.email}</span>}
-                </div>
-                <div className="form-group">
-                  <label>Message *</label>
-                  <textarea value={enquireForm.message} onChange={e => setEnquireForm({...enquireForm, message: e.target.value})} className={enquireErrors.message ? 'error' : ''} placeholder={`I'm interested in ${selectedProduct.name}...`} rows={3} />
-                  {enquireErrors.message && <span className="form-error">{enquireErrors.message}</span>}
-                </div>
-                <button type="submit" className="btn-primary" style={{ width: '100%' }}>Send Enquiry</button>
-              </form>
-            )}
+            <EnquiryForm key={selected.name} subject={`Product enquiry: ${selected.name}`} fields={enquiryFields} />
           </div>
         </div>
       )}

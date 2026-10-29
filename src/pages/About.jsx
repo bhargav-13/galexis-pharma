@@ -1,178 +1,163 @@
-import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import PageHero from '../components/PageHero'
-import './About.css'
-
-function RevealSection({ children, className = '', delay = 0 }) {
-  const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const observer = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true) }, { threshold: 0.1 })
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [])
-  return (
-    <div ref={ref} className={`reveal ${visible ? 'visible' : ''} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
-      {children}
-    </div>
-  )
-}
-
-const pillars = [
-  { image: 'https://images.unsplash.com/photo-1581093458791-9d15482c8f1c?w=400&h=220&fit=crop&q=80', title: 'Precision Manufacturing', desc: 'State-of-the-art cGMP compliant facilities producing pharmaceuticals to the highest international standards with rigorous quality controls at every stage.' },
-  { image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=220&fit=crop&q=80', title: 'Comprehensive Care', desc: 'A full spectrum healthcare portfolio spanning human medicines, veterinary products, nutraceuticals and cosmeceuticals for holistic wellbeing.' },
-  { image: 'https://images.unsplash.com/photo-1628595351029-c2bf17511435?w=400&h=220&fit=crop&q=80', title: 'Innovative IDDS', desc: 'Pioneering Innovative Drug Delivery Systems including Oral Thin Films, bilayer tablets, and novel formulations that improve patient compliance and efficacy.' },
-  { image: 'https://images.unsplash.com/photo-1614935151651-0bea6508db6b?w=400&h=220&fit=crop&q=80', title: 'Research & Development', desc: 'A robust R&D engine that continuously explores new molecules, formulations, and therapeutic strategies to address unmet medical needs worldwide.' },
-]
+import Reveal from '../components/Reveal'
+import Icon from '../components/Icon'
+import { company } from '../data/company'
 
 const values = [
-  { image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&h=220&fit=crop&q=80', title: 'Integrity', desc: 'We maintain the highest ethical standards in all our scientific, commercial, and business practices.' },
-  { image: 'https://images.unsplash.com/photo-1576670159805-381a0aa9e09e?w=400&h=220&fit=crop&q=80', title: 'Quality First', desc: 'Every product leaving our facilities meets stringent quality benchmarks — no compromises, ever.' },
-  { image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&h=220&fit=crop&q=80', title: 'Patient-Centric', desc: 'Every decision we make is guided by the impact on patient safety, wellbeing, and quality of life.' },
-  { image: 'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?w=400&h=220&fit=crop&q=80', title: 'Global Outlook', desc: 'We think globally while acting locally — adapting solutions for diverse markets across continents.' },
+  { title: 'Trust', desc: 'Long-term relationships with doctors, distributors and partners, built on transparency and dependable supply.' },
+  { title: 'Quality', desc: 'Every batch is manufactured and tested against defined specifications before it leaves our facility.' },
+  { title: 'Healthcare', desc: 'Effective, affordable medicines that reach patients — in India and across borders.' },
+]
+
+const whyUs = [
+  { icon: 'shield', title: 'Quality First', desc: 'Manufacturing in line with GMP guidelines, with in-process checks and finished-product testing.' },
+  { icon: 'box', title: 'Wide Product Range', desc: 'Tablets, capsules, oral liquids, dry syrups, topicals and nutraceuticals across key therapy segments.' },
+  { icon: 'tag', title: 'Your Brand, Our Expertise', desc: 'Third-party and private label manufacturing with support for formulation, artwork and packing.' },
+  { icon: 'clock', title: 'Timely Delivery', desc: 'Planned production and dispatch so partners receive stock when they need it.' },
+  { icon: 'handshake', title: 'Fair, Competitive Pricing', desc: 'Efficient operations that keep quality medicines affordable for our partners.' },
+  { icon: 'globe', title: 'Export Support', desc: 'Documentation and packing support for partners in international markets.' },
 ]
 
 export default function About() {
   return (
     <div className="about-page">
       <PageHero
-        title="Welcome to Auxillion Lifecare"
-        subtitle="A purpose-driven pharmaceutical company transforming global healthcare through science, innovation, and compassion."
+        title={`About ${company.name}`}
+        subtitle={`${company.intro} — from Junagadh, Gujarat. ${company.tagline}.`}
+        image="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=1920&h=700&fit=crop&q=75"
         breadcrumbs={[{ label: 'About Us' }]}
       />
 
-      {/* Overview */}
+      {/* Company profile */}
       <section className="section">
         <div className="container">
-          <RevealSection>
-            <div className="about-overview">
-              <div className="about-overview__text">
-                <span className="section-tag">Our Story</span>
-                <h2 className="section-title">Building a Healthier World, One Formulation at a Time</h2>
-                <p>
-                  Auxillion Lifecare was founded with an unwavering commitment to improving human and animal health through
-                  scientifically-driven pharmaceutical innovation. Based in Ahmedabad — India's pharmaceutical hub — we have grown
-                  into a globally-minded enterprise with offices in Jamnagar and Schwerte, Germany.
-                </p>
-                <p style={{ marginTop: '16px' }}>
-                  Our portfolio spans across human medicines, veterinary pharmaceuticals, nutraceuticals, cosmeceuticals,
-                  and international trade — making us a truly comprehensive healthcare partner. With over 200 products,
-                  presence in 20+ countries, and a pipeline of innovative formulations, we are committed to the health
-                  of patients across the globe.
-                </p>
-                <p style={{ marginTop: '16px' }}>
-                  Guided by the "One Health" philosophy — recognising the interconnection between human, animal, and
-                  environmental health — Auxillion Lifecare approaches pharmaceutical development with a holistic perspective
-                  that sets us apart in the global market.
-                </p>
-                <Link to="/contact" className="btn-primary" style={{ marginTop: '28px' }}>Connect With Us</Link>
-              </div>
-              <div className="about-overview__photo-wrap">
-                <img
-                  src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=700&h=500&fit=crop&q=80"
-                  alt="Pharmaceutical research and development laboratory"
-                  className="about-overview__photo"
-                  loading="lazy"
-                />
-                <div className="about-overview__stats-overlay">
-                  <div className="about-stat"><span className="about-stat__number">5+</span><span className="about-stat__label">Years</span></div>
-                  <div className="about-stat"><span className="about-stat__number">20+</span><span className="about-stat__label">Countries</span></div>
-                  <div className="about-stat"><span className="about-stat__number">200+</span><span className="about-stat__label">Products</span></div>
-                  <div className="about-stat"><span className="about-stat__number">3</span><span className="about-stat__label">Offices</span></div>
-                </div>
-              </div>
+          <Reveal className="gx-split">
+            <div>
+              <span className="section-tag">Who We Are</span>
+              <h2 className="section-title">Quality Medicines. Trusted Partnerships.</h2>
+              <p>
+                {company.name} is a pharmaceutical company engaged in the manufacturing and marketing of quality
+                medicines. Our facility is located at GIDC Dolatpara, Junagadh, Gujarat, from where we serve healthcare
+                professionals, distributors and business partners.
+              </p>
+              <p>
+                Our range covers tablets, capsules, oral liquids, dry syrups, ointments and nutraceuticals across key
+                therapy segments. Alongside our own brands, we partner with pharma marketing companies for third-party
+                and private label manufacturing — helping them bring reliable products to market under their own name.
+              </p>
+              <p>
+                Guided by our values of Trust, Quality and Healthcare, we work to make dependable medicines accessible
+                to more people — bridging health across borders.
+              </p>
+              <Link to="/contact" className="btn-primary">Connect With Us</Link>
             </div>
-          </RevealSection>
+            <img
+              src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=900&h=680&fit=crop&q=80"
+              alt="Pharmaceutical manufacturing"
+              className="gx-split__photo"
+              loading="lazy"
+            />
+          </Reveal>
         </div>
       </section>
 
-      {/* Pillars */}
+      {/* Values */}
       <section className="section section-bg-soft">
         <div className="container">
-          <RevealSection>
-            <div className="text-center" style={{ marginBottom: '48px' }}>
-              <span className="section-tag">Our Foundation</span>
-              <h2 className="section-title">Company Pillars</h2>
-              <p className="section-subtitle">The four pillars that form the bedrock of everything we do at Auxillion Lifecare.</p>
-            </div>
-          </RevealSection>
-          <div className="grid-4">
-            {pillars.map((p, i) => (
-              <RevealSection key={i} delay={i * 80}>
-                <div className="about-pillar-card card">
-                  <div className="about-pillar-card__img-wrap">
-                    <img src={p.image} alt={p.title} className="about-pillar-card__img" loading="lazy" />
-                  </div>
-                  <h3 className="about-pillar-card__title">{p.title}</h3>
-                  <p className="about-pillar-card__desc">{p.desc}</p>
-                </div>
-              </RevealSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Core Values */}
-      <section className="section">
-        <div className="container">
-          <RevealSection>
-            <div className="text-center" style={{ marginBottom: '48px' }}>
-              <span className="section-tag">What We Stand For</span>
-              <h2 className="section-title">Core Values</h2>
-              <p className="section-subtitle">The values that guide every decision, every product, and every partnership.</p>
-            </div>
-          </RevealSection>
-          <div className="grid-4">
+          <Reveal className="gx-head">
+            <span className="section-tag">Our Values</span>
+            <h2 className="section-title">Trust • Quality • Healthcare</h2>
+          </Reveal>
+          <div className="gx-values">
             {values.map((v, i) => (
-              <RevealSection key={i} delay={i * 80}>
-                <div className="about-value-card">
-                  <div className="about-value-card__img-wrap">
-                    <img src={v.image} alt={v.title} className="about-value-card__img" loading="lazy" />
-                  </div>
-                  <h3 className="about-value-card__title">{v.title}</h3>
-                  <p className="about-value-card__desc">{v.desc}</p>
-                </div>
-              </RevealSection>
+              <Reveal key={v.title} delay={i * 100} className="gx-value">
+                <h3>{v.title}</h3>
+                <p>{v.desc}</p>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Vision & Mission */}
+      {/* Mission & Vision */}
+      <section className="section">
+        <div className="container">
+          <div className="gx-cards">
+            <Reveal className="gx-card">
+              <div className="gx-card__icon"><Icon name="award" /></div>
+              <span className="section-tag">Our Vision</span>
+              <h3>To be a trusted name in quality healthcare — in India and beyond.</h3>
+              <p>
+                We aim to grow into a pharmaceutical company that partners, doctors and patients rely on for consistent
+                quality, wherever our medicines reach.
+              </p>
+            </Reveal>
+            <Reveal className="gx-card" delay={100}>
+              <div className="gx-card__icon"><Icon name="heart" /></div>
+              <span className="section-tag">Our Mission</span>
+              <h3>Manufacture and market effective, affordable medicines with integrity.</h3>
+              <p>
+                We do this by following sound manufacturing practices, investing in our people and processes, and serving
+                every partner with honesty and on-time delivery.
+              </p>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Why choose us */}
       <section className="section section-bg-soft">
         <div className="container">
-          <RevealSection>
-            <div className="text-center" style={{ marginBottom: '48px' }}>
-              <span className="section-tag">Our Direction</span>
-              <h2 className="section-title">Vision & Mission</h2>
-            </div>
-          </RevealSection>
-          <div className="grid-2">
-            <RevealSection delay={0}>
-              <div className="vision-mission-card vision-mission-card--vision">
-                <div className="vision-mission-card__label">Our Vision</div>
-                <h3>To be a globally trusted pharmaceutical partner</h3>
-                <p>
-                  To emerge as a leading global pharmaceutical enterprise recognised for our innovative drug formulations,
-                  uncompromising quality standards, and commitment to improving health outcomes across the human-animal
-                  health continuum. We envision a world where every patient, in every corner of the globe, has access
-                  to safe, effective, and affordable medicines.
-                </p>
-              </div>
-            </RevealSection>
-            <RevealSection delay={120}>
-              <div className="vision-mission-card vision-mission-card--mission">
-                <div className="vision-mission-card__label">Our Mission</div>
-                <h3>Developing with purpose, manufacturing with precision</h3>
-                <p>
-                  To advance global health by developing innovative, high-quality pharmaceutical products across human
-                  and veterinary medicine. We are dedicated to building a vertically integrated pharmaceutical company
-                  that combines world-class R&D, state-of-the-art manufacturing, and an agile global distribution
-                  network — delivering with pride and trust to every partner and patient we serve.
-                </p>
-              </div>
-            </RevealSection>
+          <Reveal className="gx-head">
+            <span className="section-tag">Why Choose Us</span>
+            <h2 className="section-title">A Partner You Can Rely On</h2>
+          </Reveal>
+          <div className="gx-cards">
+            {whyUs.map((w, i) => (
+              <Reveal key={w.title} delay={i * 60} className="gx-card">
+                <div className="gx-card__icon"><Icon name={w.icon} /></div>
+                <h3>{w.title}</h3>
+                <p>{w.desc}</p>
+              </Reveal>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* At a glance */}
+      <section className="section">
+        <div className="container">
+          <Reveal className="gx-split">
+            <div>
+              <span className="section-tag">At a Glance</span>
+              <h2 className="section-title">Company Information</h2>
+              <div className="gx-info-list" style={{ marginTop: 24 }}>
+                <div className="gx-info">
+                  <div className="gx-info__icon"><Icon name="factory" /></div>
+                  <div><div className="gx-info__label">Business</div><div className="gx-info__value">{company.intro}</div></div>
+                </div>
+                <div className="gx-info">
+                  <div className="gx-info__icon"><Icon name="pin" /></div>
+                  <div><div className="gx-info__label">Office & Works</div><div className="gx-info__value">{company.address.full}</div></div>
+                </div>
+                <div className="gx-info">
+                  <div className="gx-info__icon"><Icon name="doc" /></div>
+                  <div><div className="gx-info__label">GSTIN</div><div className="gx-info__value">{company.gstin}</div></div>
+                </div>
+              </div>
+            </div>
+            <div className="gx-band" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+              <div>
+                <h2>Let's work together</h2>
+                <p>Distributors, marketing companies and healthcare professionals — we'd be glad to hear from you.</p>
+              </div>
+              <div className="gx-band__btns">
+                <Link to="/contact" className="btn-primary">Contact Us</Link>
+                <Link to="/products" className="btn-secondary">View Products</Link>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
     </div>

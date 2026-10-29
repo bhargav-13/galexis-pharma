@@ -1,115 +1,67 @@
-import { useState, useEffect, useRef } from 'react'
+import { Fragment, useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import {
-  motion,
-  AnimatePresence,
-  useInView,
-  useMotionValue,
-  useSpring,
-  useTransform,
-  animate,
-} from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import Icon from '../components/Icon'
+import { dosageForms } from '../data/products'
+import { company } from '../data/company'
 import './Home.css'
 
 /* ─── DATA ─── */
 const slides = [
   {
-    headline: 'Combating Conjunctivitis with Advanced Ophthalmic Care',
-    sub: 'Trusted Research. Clear Vision.',
+    headline: company.tagline,
+    sub: `${company.intro} — Trust • Quality • Healthcare`,
     cta1: { label: 'Explore Products', path: '/products' },
-    cta2: { label: 'Learn More', path: '/human-pharma' },
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1920&h=1080&fit=crop&q=80',
+    cta2: { label: 'Contact Us', path: '/contact' },
+    image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=1920&h=1080&fit=crop&q=80',
   },
   {
-    headline: 'Fast Relief from Acidity — Anytime, Anywhere',
-    sub: 'Innovative Mouth Dissolving Film for instant relief',
-    cta1: { label: 'View Products', path: '/products' },
-    cta2: { label: 'Our R&D', path: '/rnd' },
+    headline: 'Quality Medicines, Made with Care',
+    sub: 'Tablets, capsules, syrups, dry syrups and topicals from our Junagadh facility',
+    cta1: { label: 'Manufacturing', path: '/manufacturing' },
+    cta2: { label: 'View Products', path: '/products' },
     image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1920&h=1080&fit=crop&q=80',
   },
   {
-    headline: 'Pioneering Veterinary Excellence',
-    sub: 'Your Partner in animal healthcare',
-    cta1: { label: 'Vet Products', path: '/vet-pharma' },
-    cta2: { label: 'Contact Us', path: '/contact' },
-    image: 'https://images.unsplash.com/photo-1548767797-d8c844163c4a?w=1920&h=1080&fit=crop&q=80',
+    headline: 'Your Brand, Our Manufacturing',
+    sub: 'Third-party and private label manufacturing for pharma marketing companies',
+    cta1: { label: 'Our Services', path: '/services' },
+    cta2: { label: 'Get a Quote', path: '/services#enquiry' },
+    image: 'https://images.unsplash.com/photo-1585435557343-3b092031a831?w=1920&h=1080&fit=crop&q=80',
   },
   {
-    headline: 'Precision in Pharmaceutical Production',
-    sub: 'Excellence in Tablets & Capsules Manufacturing',
-    cta1: { label: 'Manufacturing', path: '/manufacturing' },
+    headline: 'Trusted Healthcare Partners',
+    sub: 'Working with distributors and export partners in India and abroad',
+    cta1: { label: 'Export', path: '/export' },
     cta2: { label: 'Partner With Us', path: '/contact' },
-    image: 'https://images.unsplash.com/photo-1581093458791-9d15482c8f1c?w=1920&h=1080&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1920&h=1080&fit=crop&q=80',
   },
 ]
 
-const stats = [
-  { value: 5, suffix: '+', label: 'Years Active', icon: '📅' },
-  { value: 20, suffix: '+', label: 'Countries', icon: '🌍' },
-  { value: 200, suffix: '+', label: 'Products', icon: '💊' },
-  { value: 15, suffix: '+', label: 'Certifications', icon: '✅' },
+const highlights = [
+  { icon: 'shield', title: 'Trust', label: 'Reliable partner' },
+  { icon: 'award', title: 'Quality', label: 'In every batch' },
+  { icon: 'heart', title: 'Healthcare', label: 'For every patient' },
+  { icon: 'globe', title: 'Global', label: 'Across borders' },
 ]
 
-const therapeuticAreas = [
-  {
-    image: 'https://images.unsplash.com/photo-1628771065518-0d82f1938462?w=400&h=220&fit=crop&q=80',
-    title: 'Cardiology',
-    desc: 'Comprehensive cardiovascular solutions for heart health management.',
-    color: '#0A8B6E',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=220&fit=crop&q=80',
-    title: 'Gastroenterology',
-    desc: 'Advanced formulations for digestive system care and relief.',
-    color: '#1E6FBF',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=400&h=220&fit=crop&q=80',
-    title: 'Anti-Infectives',
-    desc: 'Broad-spectrum antibiotics and antifungal medications.',
-    color: '#0D4F6E',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1512678080530-7760d81faba6?w=400&h=220&fit=crop&q=80',
-    title: 'Pain Management',
-    desc: 'Effective analgesics and anti-inflammatory treatments.',
-    color: '#7C3AED',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=220&fit=crop&q=80',
-    title: 'Neurology',
-    desc: 'Specialised CNS therapies for neurological health.',
-    color: '#B45309',
-  },
+const services = [
+  { icon: 'factory', title: 'Third-Party Manufacturing', desc: 'Reliable contract manufacturing for pharma marketing companies.' },
+  { icon: 'tag', title: 'Private Label', desc: 'Your brand name, our formulation and manufacturing expertise.' },
+  { icon: 'truck', title: 'Marketing & Distribution', desc: 'Galexis-branded medicines for distributors and stockists.' },
+  { icon: 'globe', title: 'Export Supply', desc: 'Quality formulations for importers in international markets.' },
+]
+
+const brandSteps = [
+  { title: 'Choose Products', desc: 'From our range or your own composition.' },
+  { title: 'Brand & Packaging', desc: 'Brand name, label, carton and pack size.' },
+  { title: 'Manufacture & Test', desc: 'Produced and quality-tested before release.' },
+  { title: 'Dispatch', desc: 'Packed and shipped to your location.' },
 ]
 
 /* ─── EASE CONSTANTS ─── */
 const EASE_SMOOTH = [0.19, 1, 0.22, 1]
 const EASE_SHARP  = [0.77, 0, 0.175, 1]
-
-/* ─── ANIMATED COUNTER ─── */
-function AnimatedCounter({ value, suffix }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
-  const motionVal = useMotionValue(0)
-  const spring = useSpring(motionVal, { stiffness: 60, damping: 20 })
-  const display = useTransform(spring, (v) => Math.round(v))
-  const [displayed, setDisplayed] = useState(0)
-
-  useEffect(() => {
-    if (inView) motionVal.set(value)
-  }, [inView, value, motionVal])
-
-  useEffect(() => {
-    return display.on('change', setDisplayed)
-  }, [display])
-
-  return (
-    <span ref={ref} className="stat-number">
-      {displayed}{suffix}
-    </span>
-  )
-}
 
 /* ─── WORD SPLIT HEADLINE ─── */
 function SplitHeadline({ text, className, delay = 0 }) {
@@ -117,7 +69,8 @@ function SplitHeadline({ text, className, delay = 0 }) {
   return (
     <h1 className={className} aria-label={text}>
       {words.map((word, i) => (
-        <span key={i} className="word-wrap">
+        <Fragment key={i}>
+        <span className="word-wrap">
           <motion.span
             className="word"
             initial={{ y: '110%', opacity: 0 }}
@@ -130,8 +83,9 @@ function SplitHeadline({ text, className, delay = 0 }) {
           >
             {word}
           </motion.span>
-          {i < words.length - 1 && ' '}
         </span>
+        {i < words.length - 1 && ' '}
+        </Fragment>
       ))}
     </h1>
   )
@@ -228,7 +182,7 @@ export default function Home() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.7, ease: EASE_SMOOTH, delay: 0.2 }}
               >
-                Auxillion Lifecare
+                {company.name}
               </motion.span>
 
               {/* Headline — word by word */}
@@ -348,16 +302,15 @@ export default function Home() {
           >
             <motion.div className="welcome-section__content" variants={staggerItem}>
               <span className="section-tag">Welcome</span>
-              <h2 className="section-title">Redefining Healthcare<br />Through Innovation</h2>
+              <h2 className="section-title">Quality Medicines.<br />Trusted Partnerships.</h2>
               <p className="welcome-section__text">
-                Auxillion Lifecare is a dynamic pharmaceutical company committed to improving lives through advanced
-                drug formulation, rigorous quality standards, and a global distribution network. Founded with a vision
-                to bridge the gap between cutting-edge science and accessible healthcare, we operate across human
-                medicines, veterinary care, nutraceuticals, and international trade.
+                {company.name} is engaged in the manufacturing and marketing of quality medicines. From our facility at
+                GIDC Dolatpara, Junagadh, Gujarat, we produce tablets, capsules, oral liquids, dry syrups, topicals and
+                nutraceuticals across key therapy segments.
               </p>
               <p className="welcome-section__text" style={{ marginTop: 16 }}>
-                From our state-of-the-art research facilities to our cGMP-compliant manufacturing units, every step
-                of our process reflects our unwavering commitment to precision, safety, and patient wellbeing.
+                We serve healthcare professionals, distributors and pharma marketing companies — under our own brand and
+                through third-party and private label manufacturing — guided by our values of Trust, Quality and Healthcare.
               </p>
               <motion.div
                 style={{ marginTop: 28 }}
@@ -376,7 +329,7 @@ export default function Home() {
               >
                 <img
                   src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800&h=600&fit=crop&q=80"
-                  alt="Pharmaceutical research laboratory"
+                  alt="Pharmaceutical laboratory"
                   className="welcome-photo"
                   loading="lazy"
                 />
@@ -387,15 +340,15 @@ export default function Home() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.7, ease: EASE_SMOOTH, delay: 0.4 }}
                 >
-                  <span className="welcome-photo-badge__num">5+</span>
-                  <span className="welcome-photo-badge__label">Years of Excellence</span>
+                  <span className="welcome-photo-badge__num">GMP</span>
+                  <span className="welcome-photo-badge__label">Guided Manufacturing</span>
                 </motion.div>
               </motion.div>
 
               <div className="welcome-mini-cards">
                 {[
-                  { src: 'https://images.unsplash.com/photo-1581093458791-9d15482c8f1c?w=200&h=120&fit=crop&q=70', title: 'cGMP Certified', sub: 'World-class manufacturing' },
-                  { src: 'https://images.unsplash.com/photo-1614935151651-0bea6508db6b?w=200&h=120&fit=crop&q=70', title: 'R&D Driven', sub: 'Innovation at every stage' },
+                  { src: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=200&h=120&fit=crop&q=70', title: 'Quality Tested', sub: 'Every batch, before release' },
+                  { src: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=200&h=120&fit=crop&q=70', title: 'Your Brand', sub: 'Third-party & private label' },
                 ].map((card, i) => (
                   <motion.div
                     key={i}
@@ -404,7 +357,7 @@ export default function Home() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.7, ease: EASE_SMOOTH, delay: 0.3 + i * 0.15 }}
-                    whileHover={{ y: -5, boxShadow: '0 12px 32px rgba(13,43,78,0.15)' }}
+                    whileHover={{ y: -5, boxShadow: '0 12px 32px rgba(20,52,122,0.15)' }}
                   >
                     <img src={card.src} alt={card.title} loading="lazy" />
                     <div className="welcome-mini-card__text">
@@ -427,12 +380,12 @@ export default function Home() {
           <div className="innovation-statement__inner">
             <motion.div
               className="innovation-statement__quote"
-              initial={{ opacity: 0, scale: 0.5, rotate: -10 }}
-              whileInView={{ opacity: 0.18, scale: 1, rotate: 0 }}
+              initial={{ opacity: 0, scale: 0.6, rotate: -20 }}
+              whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1.2, ease: EASE_SMOOTH }}
             >
-              "
+              <img src="/brand/icon-192.png" alt="" width="72" height="72" />
             </motion.div>
 
             {/* Word-by-word reveal */}
@@ -446,7 +399,7 @@ export default function Home() {
                 show: { transition: { staggerChildren: 0.05 } },
               }}
             >
-              {'Where Innovation Meets Global Healthcare'.split(' ').map((word, i) => (
+              {'Trust. Quality. Healthcare.'.split(' ').map((word, i) => (
                 <motion.span
                   key={i}
                   className="iword"
@@ -462,7 +415,7 @@ export default function Home() {
 
             <FadeUp delay={0.4}>
               <p className="innovation-statement__sub">
-                Bridging scientific excellence with compassionate care — for humans, animals, and communities worldwide.
+                Three values that guide every medicine we make — and every partnership we build, in India and across borders.
               </p>
             </FadeUp>
           </div>
@@ -481,9 +434,9 @@ export default function Home() {
             viewport={{ once: true, margin: '-60px' }}
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
           >
-            {stats.map((stat, i) => (
+            {highlights.map((h, i) => (
               <motion.div
-                key={i}
+                key={h.title}
                 className="stat-item"
                 variants={{
                   hidden: { opacity: 0, y: 30, scale: 0.9 },
@@ -496,10 +449,10 @@ export default function Home() {
                   animate={{ rotate: [0, -8, 8, 0] }}
                   transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 3 + i }}
                 >
-                  {stat.icon}
+                  <Icon name={h.icon} />
                 </motion.span>
-                <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                <span className="stat-label">{stat.label}</span>
+                <span className="stat-number stat-number--word">{h.title}</span>
+                <span className="stat-label">{h.label}</span>
               </motion.div>
             ))}
           </motion.div>
@@ -513,10 +466,10 @@ export default function Home() {
         <div className="container">
           <FadeUp>
             <div className="text-center" style={{ marginBottom: 52 }}>
-              <span className="section-tag">Our Expertise</span>
-              <h2 className="section-title">Therapeutic Focus Areas</h2>
+              <span className="section-tag">Our Products</span>
+              <h2 className="section-title">Product Range</h2>
               <p className="section-subtitle">
-                Specialised pharmaceutical solutions across key therapeutic categories, delivering proven efficacy and clinical reliability.
+                Quality formulations across key dosage forms — for our own brands and for our manufacturing partners.
               </p>
             </div>
           </FadeUp>
@@ -528,15 +481,15 @@ export default function Home() {
             viewport={{ once: true, margin: '-40px' }}
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
           >
-            {therapeuticAreas.map((area, i) => (
+            {dosageForms.map((area, i) => (
               <motion.div
-                key={i}
+                key={area.key}
                 className="therapeutic-card"
                 variants={{
                   hidden: { opacity: 0, y: 50, scale: 0.95 },
                   show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.85, ease: EASE_SMOOTH } },
                 }}
-                whileHover={{ y: -8, boxShadow: '0 16px 40px rgba(13,43,78,0.14)', transition: { duration: 0.35, ease: EASE_SMOOTH } }}
+                whileHover={{ y: -8, boxShadow: '0 16px 40px rgba(20,52,122,0.14)', transition: { duration: 0.35, ease: EASE_SMOOTH } }}
               >
                 <div className="therapeutic-card__img-wrap">
                   <motion.img
@@ -549,7 +502,7 @@ export default function Home() {
                   />
                   <motion.div
                     className="therapeutic-card__color-bar"
-                    style={{ backgroundColor: area.color }}
+                    style={{ backgroundColor: i % 2 ? 'var(--color-primary)' : 'var(--color-accent)' }}
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
                     viewport={{ once: true }}
@@ -561,6 +514,56 @@ export default function Home() {
               </motion.div>
             ))}
           </motion.div>
+
+          <FadeUp className="text-center" delay={0.2}>
+            <Link to="/products" className="btn-outline" style={{ marginTop: 40 }}>View All Products</Link>
+          </FadeUp>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════
+          SERVICES
+      ════════════════════════════════ */}
+      <section className="section section-bg-soft">
+        <div className="container">
+          <FadeUp>
+            <div className="text-center" style={{ marginBottom: 48 }}>
+              <span className="section-tag">What We Do</span>
+              <h2 className="section-title">Manufacturing & Marketing Solutions</h2>
+            </div>
+          </FadeUp>
+          <div className="gx-cards">
+            {services.map((sv, i) => (
+              <FadeUp key={sv.title} delay={i * 0.08}>
+                <div className="gx-card">
+                  <div className="gx-card__icon"><Icon name={sv.icon} /></div>
+                  <h3>{sv.title}</h3>
+                  <p>{sv.desc}</p>
+                </div>
+              </FadeUp>
+            ))}
+          </div>
+
+          <FadeUp>
+            <div className="text-center" style={{ margin: '72px 0 36px' }}>
+              <span className="section-tag">Make Your Brand</span>
+              <h2 className="section-title">Launch Your Brand in 4 Steps</h2>
+            </div>
+          </FadeUp>
+          <div className="gx-steps">
+            {brandSteps.map((st, i) => (
+              <FadeUp key={st.title} delay={i * 0.08}>
+                <div className="gx-step">
+                  <span className="gx-step__num">0{i + 1}</span>
+                  <h3>{st.title}</h3>
+                  <p>{st.desc}</p>
+                </div>
+              </FadeUp>
+            ))}
+          </div>
+          <FadeUp className="text-center" delay={0.2}>
+            <Link to="/services" className="btn-primary" style={{ marginTop: 40 }}>Explore Services</Link>
+          </FadeUp>
         </div>
       </section>
 
@@ -595,7 +598,7 @@ export default function Home() {
           >
             <motion.span
               className="section-tag"
-              style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', borderColor: 'rgba(255,255,255,0.3)' }}
+              style={{ color: 'var(--color-accent-light)' }}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -610,7 +613,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.9, ease: EASE_SMOOTH, delay: 0.3 }}
             >
-              Ready to Shape the Future of Healthcare?
+              Let's Bring Quality Medicines to More People
             </motion.h2>
             <motion.p
               className="cta-banner__text"
@@ -619,18 +622,24 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.9, ease: EASE_SMOOTH, delay: 0.45 }}
             >
-              Developing with purpose, manufacturing with precision, delivering with pride and trust.
-              Let's build the future of healthcare together.
+              Distributor, marketing company or export partner — talk to us about your requirement today.
             </motion.p>
             <motion.div
+              className="cta-banner__btns"
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, ease: EASE_SMOOTH, delay: 0.6 }}
-              whileHover={{ y: -4 }}
-              whileTap={{ scale: 0.96 }}
             >
-              <Link to="/contact" className="cta-banner__btn">Get in Touch</Link>
+              <Link to="/contact" className="cta-banner__btn">
+                Get in Touch
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </Link>
+              <a href={`tel:${company.phones[0].tel}`} className="cta-banner__btn cta-banner__btn--ghost">
+                Call {company.phones[0].display}
+              </a>
             </motion.div>
           </motion.div>
         </div>
