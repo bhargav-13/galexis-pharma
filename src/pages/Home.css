@@ -229,35 +229,6 @@
   transition: none; /* framer handles */
 }
 
-.welcome-photo-badge {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  background: rgba(255,255,255,0.96);
-  backdrop-filter: blur(8px);
-  border-radius: var(--radius-md);
-  border-left: 4px solid var(--color-accent);
-  padding: 14px 22px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: var(--shadow-md);
-}
-.welcome-photo-badge__num {
-  font-family: var(--font-heading);
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--color-accent);
-  line-height: 1;
-}
-.welcome-photo-badge__label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-top: 3px;
-}
-
 .welcome-mini-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -529,6 +500,55 @@
   box-shadow: none;
 }
 
+/* ── Product brochure band ── */
+.brochure-band {
+  background:
+    radial-gradient(ellipse at 10% 100%, rgba(46, 155, 74, 0.3), transparent 55%),
+    linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-deep) 100%);
+  padding: 64px 0;
+  color: #fff;
+}
+.brochure-band__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.brochure-band__content {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.brochure-band__icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 72px; height: 72px;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--color-accent-light);
+}
+.brochure-band__icon svg { width: 34px; height: 34px; }
+.brochure-band__title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+}
+.brochure-band__text {
+  margin-top: 8px;
+  color: rgba(255,255,255,0.75);
+  max-width: 480px;
+}
+.brochure-band__btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
 /* ══════════════════════════════
    RESPONSIVE
 ══════════════════════════════ */
@@ -540,6 +560,7 @@
   .stat-item { border-bottom: 1px solid rgba(255,255,255,0.08); }
   .stat-item:nth-child(3), .stat-item:nth-child(4) { border-bottom: none; }
   .stat-item:nth-child(3) { border-right: 1px solid rgba(255,255,255,0.1); }
+  .brochure-band__inner { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 768px) {
   .hero-nav { display: none; }
@@ -554,6 +575,9 @@
   .welcome-mini-cards { grid-template-columns: 1fr; }
   .hero-slide__actions { flex-direction: column; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .brochure-band__content { flex-direction: column; align-items: flex-start; gap: 18px; }
+  .brochure-band__btns { width: 100%; flex-direction: column; }
+  .brochure-band__btns .cta-banner__btn { justify-content: center; }
 }
 
 /* Highlight words in the stats band (no counters) */

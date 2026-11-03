@@ -60,6 +60,8 @@ const brandSteps = [
 ]
 
 /* ─── EASE CONSTANTS ─── */
+const BROCHURE_URL = '/brochure/galexis-product-brochure.pdf'
+
 const EASE_SMOOTH = [0.19, 1, 0.22, 1]
 const EASE_SHARP  = [0.77, 0, 0.175, 1]
 
@@ -333,16 +335,6 @@ export default function Home() {
                   className="welcome-photo"
                   loading="lazy"
                 />
-                <motion.div
-                  className="welcome-photo-badge"
-                  initial={{ opacity: 0, scale: 0.7, y: 20 }}
-                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.7, ease: EASE_SMOOTH, delay: 0.4 }}
-                >
-                  <span className="welcome-photo-badge__num">GMP</span>
-                  <span className="welcome-photo-badge__label">Guided Manufacturing</span>
-                </motion.div>
               </motion.div>
 
               <div className="welcome-mini-cards">
@@ -517,6 +509,33 @@ export default function Home() {
 
           <FadeUp className="text-center" delay={0.2}>
             <Link to="/products" className="btn-outline" style={{ marginTop: 40 }}>View All Products</Link>
+          </FadeUp>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════
+          PRODUCT BROCHURE
+      ════════════════════════════════ */}
+      <section className="brochure-band">
+        <div className="container">
+          <FadeUp className="brochure-band__inner">
+            <div className="brochure-band__content">
+              <span className="brochure-band__icon"><Icon name="doc" /></span>
+              <div>
+                <h2 className="brochure-band__title">Explore Our Product Brochure</h2>
+                <p className="brochure-band__text">
+                  Our full product range in one PDF — easy to save, print or share with your team.
+                </p>
+              </div>
+            </div>
+            <div className="brochure-band__btns">
+              <a href={BROCHURE_URL} download="Galexis-Product-Brochure.pdf" className="cta-banner__btn">
+                Download Brochure
+              </a>
+              <a href={BROCHURE_URL} target="_blank" rel="noopener noreferrer" className="cta-banner__btn cta-banner__btn--ghost">
+                View Online
+              </a>
+            </div>
           </FadeUp>
         </div>
       </section>
